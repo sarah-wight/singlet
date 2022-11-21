@@ -1,12 +1,9 @@
-#' Plot overall distance vs cell type distance
-#'
-#' @param w     matrix giving genes as rows and samples as columns
-#' @param w_0   weighted matrix giving genes as rows and samples as columns
-#' @param YFG   gene to compare
+#' Jaccard Similarity C++ Function
 #' 
-#' @return      a ggplot2 object
-
-# Jaccard Similarity C++ Function
+#' @param w         matrix giving genes as rows and samples as columns
+#' @param YFG_idx   index of selected gene
+#' 
+#' @return res      jaccard similarity
 Rcpp::cppFunction(
      'Rcpp::NumericVector c_jaccard_similarity(const Rcpp::NumericMatrix w, size_t YFG_idx) {
        --YFG_idx; // C++ indexing is 1 less than R indexing
@@ -26,7 +23,7 @@ Rcpp::cppFunction(
        return res;
      }')
      
-# Creating weighted matrix w_0 based on celltype 
+# Creating weighted matrix w_0 based on celltype - should this part be in this file or just the function?
 w <- data@reductions$nmf@feature.loadings
 h <- data@reductions$nmf@cell.embeddings
 celltype <- data@meta.data$cell_type
@@ -36,7 +33,13 @@ column_mean <- colMeans(h_0)
 library(Matrix)
 w_0 <- as.matrix(w %*% Diagonal(x = column_mean))
 
-# Change name of plot_YFG
+#' Plot overall distance vs cell type distance
+#'
+#' @param w     matrix giving genes as rows and samples as columns
+#' @param w_0   weighted matrix giving genes as rows and samples as columns
+#' @param YFG   gene to compare
+#' 
+#' @return      a ggplot2 object
 plot_YFG <- function(w, w_0, YFG = NULL){
    
   dist_YFG <- rep(0, nrow(w)) 
