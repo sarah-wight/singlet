@@ -1,9 +1,14 @@
 #' Jaccard Similarity C++ Function
 #' 
+#' @details Returns the Jaccard Similarity index of a selected gene with each of the genes in w
+#'
 #' @param w         matrix giving genes as rows and samples as columns
 #' @param YFG_idx   index of selected gene
 #' 
 #' @return res      jaccard similarity
+#' 
+#' @export
+#'  
 Rcpp::cppFunction(
      'Rcpp::NumericVector c_jaccard_similarity(const Rcpp::NumericMatrix w, size_t YFG_idx) {
        --YFG_idx; // C++ indexing is 1 less than R indexing
@@ -35,11 +40,16 @@ w_0 <- as.matrix(w %*% Diagonal(x = column_mean))
 
 #' Plot overall distance vs cell type distance
 #'
+#' @details returns a ggplot2 with the overall distance vs cell type distance 
+#'  
 #' @param w     matrix giving genes as rows and samples as columns
 #' @param w_0   weighted matrix giving genes as rows and samples as columns
 #' @param YFG   gene to compare
 #' 
 #' @return      a ggplot2 object
+#' 
+#' @export 
+#' 
 plot_YFG <- function(w, w_0, YFG = NULL){
    
   dist_YFG <- rep(0, nrow(w)) 
